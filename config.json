@@ -5,6 +5,6 @@
  "server_port":"REQUIRED",
  "password":"REQUIRED",
  "method":"REQUIRED",
- "local_port":1081,
+ "local_port":"REQUIRED",
  "local_address": "0.0.0.0"
 }
