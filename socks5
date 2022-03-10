@@ -88,8 +88,15 @@ kill_socks5 () {
     
 }
 
-case $1 in
-    init) init_socks5 ;;
-    kill) kill_socks5 ;;
-    *|-h|--help|help) echo "usage: . socks5 [init|kill]" ;;
-esac
+usage="usage: . socks5 [init|kill]"
+
+if test $# -gt 1
+then
+    echo $usage
+else
+    case $1 in
+        init) init_socks5 ;;
+        kill) kill_socks5 ;;
+        *|-h|--help|help) echo $usage ;;
+    esac
+fi
