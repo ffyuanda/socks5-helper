@@ -6,7 +6,9 @@ intended to ease the process of initiating a socks5 proxy.
 
 ## Config
 
-1. Move the `socks5` script into your favourite bin directory (e.g. `$HOME/bin`)
+0. Make sure you have `ss-local` installed, if not, consult [ss-local](https://github.com/shadowsocks/shadowsocks-libev).
+
+1. Move the `socks5` script into your favourite bin directory (e.g. `$HOME/bin`).
 
 2. Make sure your bin directory can be sourced to be included in `$PATH`.  
 
