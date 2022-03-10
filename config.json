@@ -1,0 +1,10 @@
+{
+ "remarks":"OPTIONAL",
+ "name":"OPTIONAL",
+ "server":"REQUIRED",
+ "server_port":"REQUIRED",
+ "password":"REQUIRED",
+ "method":"REQUIRED",
+ "local_port":1081,
+ "local_address": "0.0.0.0"
+}

@@ -1,0 +1,95 @@
+#!/bin/bash 
+
+# socks5-helper - a tiny ss-local helper shell script
+#
+# Copyright (C) 2022 Shaoxuan Yuan
+#
+# usage: . socks5 [init|kill]
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/ .
+
+init_socks5 () {
+
+    export http_proxy="socks5://127.0.0.1:1081"
+    export https_proxy="socks5://127.0.0.1:1081"
+
+    RED="\e[31m"
+    GREEN="\e[32m"
+    NC="\e[0m"
+
+    CONFIG="$HOME/socks5/config.json"
+
+    connection_count=1
+    max_connection=10
+    sleep_time=1
+    success=true
+
+    if pid=$(pgrep -x "ss-local") >/dev/null 2>&1
+    then
+        echo -e "ss-local is already running with PID $pid \n"
+    else
+        echo -e "initiating ss-local with the following config: \n"
+        cat $CONFIG
+        (ss-local -c $CONFIG >/dev/null 2>&1 &)
+    fi
+
+    while ! curl google.com >/dev/null 2>&1
+    do echo "trial $connection_count (max trial: 10) verifying the connection with google"
+
+        if test $connection_count -gt $max_connection
+        then
+            echo -e "${RED}bad connection!${NC}"
+            success=false
+            break
+        fi
+
+        sleep $sleep_time
+        let connection_count+=1
+
+    done
+
+    if $success
+    then
+        echo -e "${GREEN}successfully connected to google!${NC}"
+    fi
+
+}
+
+kill_socks5 () {
+
+    unset http_proxy
+    unset https_proxy
+
+    pid=$(pgrep -x "ss-local") >/dev/null 2>&1
+
+    if test $? = 1
+    then
+        echo "nothing to kill: ss-local is not running"
+    else
+        kill $pid
+        if ! pgrep -x "ss-local"
+        then
+            echo "ss-local with PID $pid is killed"
+        else
+            echo "ss-local with PID $pid cannot be killed"
+        fi
+    fi
+    
+}
+
+case $1 in
+    init) init_socks5 ;;
+    kill) kill_socks5 ;;
+    *|-h|--help|help) echo "usage: . socks5 [init|kill]" ;;
+esac
