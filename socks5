@@ -31,7 +31,7 @@ init_socks5 () {
     CONFIG="$HOME/socks5/config.json"
 
     connection_count=1
-    max_connection=10
+    max_connection=3
     sleep_time=1
     success=true
 
@@ -44,7 +44,7 @@ init_socks5 () {
         (ss-local -c $CONFIG >/dev/null 2>&1 &)
     fi
 
-    while ! curl google.com >/dev/null 2>&1
+    while ! curl --max-time 3 google.com >/dev/null 2>&1
     do echo "trial $connection_count (max trial: 10) verifying the connection with google"
 
         if test $connection_count -gt $max_connection
